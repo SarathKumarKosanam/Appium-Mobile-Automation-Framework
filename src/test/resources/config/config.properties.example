@@ -1,0 +1,6 @@
+executionEnv=local
+localAppiumUrl=
+deviceName=
+lt_username=
+lt_access_key=
+# ... and so on
