@@ -1,6 +1,16 @@
+# MASTER SWITCH: Set to 'local' or 'cloud'
 executionEnv=local
-localAppiumUrl=
-deviceName=
-lt_username=
-lt_access_key=
-# ... and so on
+
+# LOCAL CONFIGURATION
+localAppiumUrl=http://127.0.0.1:4723
+deviceName=emulator-5554
+appLocation=/src/test/resources/apps/ApiDemos-debug.apk
+appPackage=io.appium.android.apis
+appActivity=io.appium.android.apis.ApiDemos
+
+# CLOUD CONFIGURATION (LambdaTest)
+lt_username=YOUR_USERNAME
+lt_access_key=YOUR_ACCESS_KEY
+lt_app_url=lt://YOUR_APP_ID
+lt_deviceName=Galaxy S22 5G
+lt_platformVersion=13
