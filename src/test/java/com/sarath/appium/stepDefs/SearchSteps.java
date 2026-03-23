@@ -18,6 +18,8 @@ public class SearchSteps {
         searchPage.clickClearHistory();
     }
 
+// This is just to update the comment
+    
     @Then("the \"History Cleared\" message should be visible")
     public void verifySuccessMessage() {
         // This step will never be reached because the previous step fails
