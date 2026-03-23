@@ -12,8 +12,6 @@ public class BaseTest {
     public static AndroidDriver driver;
 
     public static void initializeDriver() throws Exception {
-        // Priority 1: System Property (passed via mvn test -DexecutionEnv=cloud)
-        // Priority 2: Config file property
         String executionEnv = System.getProperty("executionEnv") != null
                 ? System.getProperty("executionEnv")
                 : ConfigReader.getProperty("executionEnv");
@@ -22,8 +20,6 @@ public class BaseTest {
         URL url;
 
         if ("cloud".equalsIgnoreCase(executionEnv)) {
-            // --- LambdaTest Cloud Configuration ---
-            // Using System.getProperty allows CI/CD tools to inject secrets securely
             String ltUsername = System.getProperty("LT_USERNAME") != null
                     ? System.getProperty("LT_USERNAME")
                     : ConfigReader.getProperty("lt_username");
@@ -34,22 +30,29 @@ public class BaseTest {
 
             HashMap<String, Object> ltOptions = new HashMap<>();
             ltOptions.put("w3c", true);
-            ltOptions.put("platformName", "android");
+            ltOptions.put("platformName", "Android");
             ltOptions.put("deviceName", ConfigReader.getProperty("lt_deviceName"));
             ltOptions.put("platformVersion", ConfigReader.getProperty("lt_platformVersion"));
             ltOptions.put("app", ConfigReader.getProperty("lt_app_url"));
-            ltOptions.put("isRealMobile", true);
+
+            // Ensure this is a boolean, not a string
+            boolean isReal = Boolean.parseBoolean(ConfigReader.getProperty("isRealMobile"));
+            ltOptions.put("isRealMobile", isReal);
+
             ltOptions.put("project", "Android_Automation_Framework");
-            ltOptions.put("build", "Build_v1.0");
-            ltOptions.put("name", "Cucumber_Automation_Run");
+            ltOptions.put("build", "Build_v2.0");
+            ltOptions.put("name", "LambdaTest_Execution");
             ltOptions.put("visual", true);
             ltOptions.put("video", true);
+            ltOptions.put("network", false);
 
+            // Set main capability to ensure platform consistency
+            options.setCapability("platformName", "Android");
             options.setCapability("lt:options", ltOptions);
+
             url = new URL("https://" + ltUsername + ":" + ltAccessKey + "@mobile-hub.lambdatest.com/wd/hub");
 
         } else {
-            // --- Local Execution Configuration ---
             String projectRoot = System.getProperty("user.dir");
             String relativeAppPath = ConfigReader.getProperty("appLocation");
             String fullAppPath = projectRoot + relativeAppPath.replace("/", File.separator).replace("\\", File.separator);
@@ -65,7 +68,7 @@ public class BaseTest {
         }
 
         driver = new AndroidDriver(url, options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
     }
 
     public static void quitDriver() {
